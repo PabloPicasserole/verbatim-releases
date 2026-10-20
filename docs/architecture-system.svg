@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 550" width="1000" height="550" role="img" aria-label="System diagram: the author uses the Verbatim app, a desktop window that starts the bundled Python engine on 127.0.0.1 with a per-launch secret and shows the web app it serves. The engine reads and writes her data folder and runs FFmpeg, whisper.cpp, sherpa-onnx and later llama.cpp one at a time, which load weights from the models. The app folder holds the engine, tools, small models and web app and is replaced by each update. Only two things cross the boundary: the daily update check and signed updates from GitHub releases, and the one-time speech model download from Hugging Face.">
+<title>How Verbatim fits together</title>
+<style>
+  svg { color: #0a0a0a; }
+  text { fill: #0a0a0a; font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 12px; }
+  .t { font-weight: 600; font-size: 13px; } .s { fill: #6e6e6e; font-size: 11px; }
+  .f { font-family: ui-monospace, "SF Mono", Consolas, monospace; } .cap { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 10.5px; letter-spacing: 0.08em; fill: #6e6e6e; }
+  .box { fill: #ffffff; stroke: #0a0a0a; stroke-width: 1.25; } .strong { fill: #ffffff; stroke: #0a0a0a; stroke-width: 2.25; }
+  .soft { fill: #fafafa; stroke: #d6d6d6; stroke-width: 1; } .later { stroke-dasharray: 5 4; }
+  .ln { stroke: #0a0a0a; stroke-width: 1.25; fill: none; } .ln.dash { stroke-dasharray: 5 4; }
+  .boundary { fill: none; stroke: #0a0a0a; stroke-width: 2; }
+</style>
+<rect x="0" y="0" width="1000" height="550" rx="14" fill="#ffffff"/>
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        </defs>
+
+        <!-- boundary -->
+        <rect class="boundary" x="150" y="40" width="830" height="420" rx="16"/>
+        <text class="cap" x="172" y="68">HER COMPUTER · MAC OR WINDOWS</text>
+        <text class="s" x="958" y="68" text-anchor="end">audio and text never leave this box</text>
+
+        <!-- author -->
+        <circle class="box" cx="60" cy="112" r="13"/>
+        <path class="ln" d="M36,160 C36,138 84,138 84,160"/>
+        <text class="t" x="60" y="184" text-anchor="middle">Author</text>
+        <line class="ln" x1="98" y1="140" x2="177" y2="140" marker-end="url(#a1)"/>
+        <text class="s" x="138" y="132" text-anchor="middle">uses</text>
+
+        <!-- row 1 -->
+        <rect class="strong" x="180" y="90" width="200" height="100" rx="10"/>
+        <text class="t" x="280" y="122" text-anchor="middle">Verbatim app</text>
+        <text class="s" x="280" y="144" text-anchor="middle">Tauri 2 window, shows the</text>
+        <text class="s" x="280" y="160" text-anchor="middle">web app · quits · updates</text>
+        <text class="s" x="280" y="176" text-anchor="middle">React · Base UI · Stark</text>
+
+        <rect class="box" x="440" y="90" width="200" height="100" rx="10"/>
+        <text class="t" x="540" y="122" text-anchor="middle">Engine</text>
+        <text class="s" x="540" y="144" text-anchor="middle">Python · FastAPI · bundled</text>
+        <text class="s" x="540" y="160" text-anchor="middle">on 127.0.0.1 with a secret</text>
+        <text class="s" x="540" y="176" text-anchor="middle">runs one stage at a time</text>
+
+        <rect class="box" x="700" y="90" width="250" height="100" rx="10"/>
+        <text class="t" x="825" y="122" text-anchor="middle">Her data folder</text>
+        <text class="s" x="825" y="144" text-anchor="middle">projects · interviews · her voice</text>
+        <text class="s" x="825" y="160" text-anchor="middle">settings · backups · speech model</text>
+        <text class="s" x="825" y="176" text-anchor="middle">never touched by updates</text>
+
+        <line class="ln" x1="382" y1="122" x2="437" y2="122" marker-end="url(#a1)"/>
+        <text class="s" x="410" y="114" text-anchor="middle">starts</text>
+        <line class="ln" x1="438" y1="160" x2="383" y2="160" marker-end="url(#a1)"/>
+        <text class="s" x="410" y="178" text-anchor="middle">pages</text>
+
+        <line class="ln" x1="642" y1="122" x2="697" y2="122" marker-end="url(#a1)"/>
+        <text class="s" x="670" y="114" text-anchor="middle">writes</text>
+        <line class="ln" x1="698" y1="160" x2="643" y2="160" marker-end="url(#a1)"/>
+        <text class="s" x="670" y="178" text-anchor="middle">reads</text>
+
+        <!-- bus to tools -->
+        <line class="ln" x1="540" y1="190" x2="540" y2="218"/>
+        <line class="ln" x1="501" y1="218" x2="897" y2="218"/>
+        <text class="s" x="552" y="208">starts tools, one at a time</text>
+        <line class="ln" x1="501" y1="218" x2="501" y2="237" marker-end="url(#a1)"/>
+        <line class="ln" x1="633" y1="218" x2="633" y2="237" marker-end="url(#a1)"/>
+        <line class="ln" x1="765" y1="218" x2="765" y2="237" marker-end="url(#a1)"/>
+        <line class="ln dash" x1="897" y1="218" x2="897" y2="237" marker-end="url(#a1)"/>
+
+        <!-- tools -->
+        <rect class="box" x="440" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="501" y="264" text-anchor="middle">FFmpeg</text>
+        <text class="s" x="501" y="282" text-anchor="middle">own LGPL build</text>
+
+        <rect class="box" x="572" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="633" y="264" text-anchor="middle">whisper.cpp</text>
+        <text class="s" x="633" y="282" text-anchor="middle">Metal · Vulkan · CPU</text>
+
+        <rect class="box" x="704" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="765" y="264" text-anchor="middle">sherpa-onnx</text>
+        <text class="s" x="765" y="282" text-anchor="middle">who is speaking</text>
+
+        <rect class="box later" x="836" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="897" y="264" text-anchor="middle">llama.cpp</text>
+        <text class="s" x="897" y="282" text-anchor="middle">LLM review · M3</text>
+
+        <!-- models -->
+        <line class="ln" x1="633" y1="298" x2="633" y2="337" marker-end="url(#a1)"/>
+        <line class="ln" x1="765" y1="298" x2="765" y2="337" marker-end="url(#a1)"/>
+        <line class="ln dash" x1="897" y1="298" x2="897" y2="337" marker-end="url(#a1)"/>
+        <text class="s" x="641" y="322">loads weights</text>
+
+        <rect class="box" x="440" y="340" width="518" height="52" rx="8"/>
+        <text class="t" x="460" y="362">Models</text>
+        <text class="s" x="460" y="380">Whisper large-v3-turbo (downloaded once) · VAD, TitaNet, segmentation (inside the app)</text>
+
+        <!-- app folder -->
+        <rect class="soft" x="232" y="240" width="186" height="152" rx="10"/>
+        <text class="t" x="248" y="266">App folder</text>
+        <text class="s" x="248" y="288">read-only, replaced</text>
+        <text class="s" x="248" y="304">by each update:</text>
+        <text class="s" x="248" y="326">engine · FFmpeg · whisper.cpp</text>
+        <text class="s" x="248" y="342">small models · web app</text>
+        <text class="s" x="248" y="364">a backup of her work is</text>
+        <text class="s" x="248" y="380">made before every update</text>
+
+        <!-- outside -->
+        <rect class="soft later" x="180" y="490" width="250" height="44" rx="8"/>
+        <text x="305" y="510" text-anchor="middle">GitHub releases</text>
+        <text class="s" x="305" y="525" text-anchor="middle">latest.json · signed updates</text>
+        <line class="ln dash" x1="202" y1="488" x2="202" y2="193" marker-end="url(#a1)"/>
+        <text class="s" x="212" y="474">update check (daily, switchable)</text>
+
+        <rect class="soft later" x="580" y="490" width="250" height="44" rx="8"/>
+        <text x="705" y="510" text-anchor="middle">Hugging Face</text>
+        <text class="s" x="705" y="525" text-anchor="middle">checked against its SHA-256</text>
+        <line class="ln dash" x1="705" y1="488" x2="705" y2="395" marker-end="url(#a1)"/>
+        <text class="s" x="715" y="474">speech model, once, at setup</text>
+</svg>

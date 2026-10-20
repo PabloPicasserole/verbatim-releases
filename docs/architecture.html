@@ -1,0 +1,697 @@
+<title>Verbatim Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow reading column; each figure breaks wider and scrolls on its own at phone width. Monochrome, per the app's direction. */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --fg: #0a0a0a;
+  --muted: #6e6e6e;
+  --line: #d6d6d6;
+  --faint: #ececec;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0b0b; --surface: #141414; --fg: #f1f1f1; --muted: #9b9b9b; --line: #343434; --faint: #262626;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0b0b; --surface: #141414; --fg: #f1f1f1; --muted: #9b9b9b; --line: #343434; --faint: #262626;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 56px 96px;
+}
+.page { max-width: 1040px; margin: 0 auto; display: grid; gap: 72px; }
+.prose { max-width: 66ch; }
+
+header { display: grid; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.04; letter-spacing: -0.035em; font-weight: 600; margin: 0; text-wrap: balance; }
+h2 { font-size: 22px; letter-spacing: -0.02em; font-weight: 600; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { font-size: 17px; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-family: var(--mono); font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted);
+}
+.chip.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+section { display: grid; gap: 18px; }
+section > .head { display: grid; gap: 8px; }
+.head p { color: var(--muted); max-width: 66ch; }
+
+figure { margin: 0; display: grid; gap: 12px; }
+.canvas {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 8px;
+}
+.canvas svg { display: block; width: 100%; height: auto; min-width: 760px; color: var(--fg); }
+figcaption { font-size: 13px; color: var(--muted); max-width: 72ch; }
+
+/* SVG parts */
+.d text { fill: var(--fg); font-family: var(--sans); font-size: 12px; }
+.d .t { font-weight: 600; font-size: 13px; }
+.d .s { fill: var(--muted); font-size: 11px; }
+.d .f { font-family: var(--mono); font-size: 11.5px; }
+.d .n { font-family: var(--mono); font-size: 11.5px; fill: var(--muted); }
+.d .cap { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; fill: var(--muted); }
+.d .box { fill: var(--surface); stroke: var(--fg); stroke-width: 1.25; }
+.d .soft { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.d .strong { fill: var(--surface); stroke: var(--fg); stroke-width: 2.25; }
+.d .later { stroke-dasharray: 5 4; }
+.d .ln { stroke: var(--fg); stroke-width: 1.25; fill: none; }
+.d .ln.m { stroke: var(--muted); }
+.d .ln.dash { stroke-dasharray: 5 4; }
+.d .pill { fill: var(--fg); }
+.d .pt { fill: var(--bg); font-family: var(--mono); font-size: 10.5px; }
+.d .grid { stroke: var(--line); stroke-width: 1; }
+.d .limit { stroke: var(--fg); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.d .base { fill: var(--faint); stroke: var(--line); }
+.d .model { fill: var(--fg); }
+.d .ghost { fill: none; stroke: var(--fg); stroke-width: 1.25; stroke-dasharray: 5 4; }
+.d .boundary { fill: none; stroke: var(--fg); stroke-width: 2; }
+
+/* Two-up blocks */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; align-items: start; }
+@media (max-width: 800px) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+pre {
+  margin: 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px;
+}
+pre .c { color: var(--muted); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.k { font-weight: 600; white-space: nowrap; }
+td .s { color: var(--muted); }
+td code, p code, li code { font-family: var(--mono); font-size: 0.92em; }
+
+.state { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; color: var(--muted); }
+.state.now { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.state.wait { border-style: dashed; color: var(--fg); }
+
+ul.risks { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 72ch; }
+ul.risks li { padding-left: 18px; position: relative; }
+ul.risks li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 8px; height: 1.5px; background: var(--fg); }
+ul.risks b { font-weight: 600; }
+</style>
+
+<div class="page">
+
+<header>
+  <div class="eyebrow">Verbatim</div>
+  <h1>How Verbatim fits together</h1>
+  <p class="lede prose">A local app that transcribes recorded interviews using context she gives it up front, then asks her to confirm what it isn't sure about. This page shows the parts, the order they run in, and what each one leaves on disk.</p>
+  <div class="meta">
+    <span class="chip">Spec v1 · agreed 17 Oct 2026</span>
+    <span class="chip on">Version 0.1.2 released</span>
+    <span class="chip">Updated 20 Oct · desktop app</span>
+    <span class="chip">Mac + Windows · fully local</span>
+  </div>
+</header>
+
+<!-- 1. System -->
+<section>
+  <div class="head">
+    <h2>The system</h2>
+    <p>Everything runs on her computer. Only two things ever cross the boundary: the one-time speech model download during setup, and the update check (which she can switch off) with the signed updates it finds.</p>
+  </div>
+  <figure>
+    <div class="canvas">
+      <svg class="d" viewBox="0 0 1000 550" role="img" aria-label="System diagram: the author uses the Verbatim app, a desktop window that starts the bundled Python engine on 127.0.0.1 with a per-launch secret and shows the web app it serves. The engine reads and writes her data folder and runs FFmpeg, whisper.cpp, sherpa-onnx and later llama.cpp one at a time, which load weights from the models. The app folder holds the engine, tools, small models and web app and is replaced by each update. Only two things cross the boundary: the daily update check and signed updates from GitHub releases, and the one-time speech model download from Hugging Face.">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        </defs>
+
+        <!-- boundary -->
+        <rect class="boundary" x="150" y="40" width="830" height="420" rx="16"/>
+        <text class="cap" x="172" y="68">HER COMPUTER · MAC OR WINDOWS</text>
+        <text class="s" x="958" y="68" text-anchor="end">audio and text never leave this box</text>
+
+        <!-- author -->
+        <circle class="box" cx="60" cy="112" r="13"/>
+        <path class="ln" d="M36,160 C36,138 84,138 84,160"/>
+        <text class="t" x="60" y="184" text-anchor="middle">Author</text>
+        <line class="ln" x1="98" y1="140" x2="177" y2="140" marker-end="url(#a1)"/>
+        <text class="s" x="138" y="132" text-anchor="middle">uses</text>
+
+        <!-- row 1 -->
+        <rect class="strong" x="180" y="90" width="200" height="100" rx="10"/>
+        <text class="t" x="280" y="122" text-anchor="middle">Verbatim app</text>
+        <text class="s" x="280" y="144" text-anchor="middle">Tauri 2 window, shows the</text>
+        <text class="s" x="280" y="160" text-anchor="middle">web app · quits · updates</text>
+        <text class="s" x="280" y="176" text-anchor="middle">React · Base UI · Stark</text>
+
+        <rect class="box" x="440" y="90" width="200" height="100" rx="10"/>
+        <text class="t" x="540" y="122" text-anchor="middle">Engine</text>
+        <text class="s" x="540" y="144" text-anchor="middle">Python · FastAPI · bundled</text>
+        <text class="s" x="540" y="160" text-anchor="middle">on 127.0.0.1 with a secret</text>
+        <text class="s" x="540" y="176" text-anchor="middle">runs one stage at a time</text>
+
+        <rect class="box" x="700" y="90" width="250" height="100" rx="10"/>
+        <text class="t" x="825" y="122" text-anchor="middle">Her data folder</text>
+        <text class="s" x="825" y="144" text-anchor="middle">projects · interviews · her voice</text>
+        <text class="s" x="825" y="160" text-anchor="middle">settings · backups · speech model</text>
+        <text class="s" x="825" y="176" text-anchor="middle">never touched by updates</text>
+
+        <line class="ln" x1="382" y1="122" x2="437" y2="122" marker-end="url(#a1)"/>
+        <text class="s" x="410" y="114" text-anchor="middle">starts</text>
+        <line class="ln" x1="438" y1="160" x2="383" y2="160" marker-end="url(#a1)"/>
+        <text class="s" x="410" y="178" text-anchor="middle">pages</text>
+
+        <line class="ln" x1="642" y1="122" x2="697" y2="122" marker-end="url(#a1)"/>
+        <text class="s" x="670" y="114" text-anchor="middle">writes</text>
+        <line class="ln" x1="698" y1="160" x2="643" y2="160" marker-end="url(#a1)"/>
+        <text class="s" x="670" y="178" text-anchor="middle">reads</text>
+
+        <!-- bus to tools -->
+        <line class="ln" x1="540" y1="190" x2="540" y2="218"/>
+        <line class="ln" x1="501" y1="218" x2="897" y2="218"/>
+        <text class="s" x="552" y="208">starts tools, one at a time</text>
+        <line class="ln" x1="501" y1="218" x2="501" y2="237" marker-end="url(#a1)"/>
+        <line class="ln" x1="633" y1="218" x2="633" y2="237" marker-end="url(#a1)"/>
+        <line class="ln" x1="765" y1="218" x2="765" y2="237" marker-end="url(#a1)"/>
+        <line class="ln dash" x1="897" y1="218" x2="897" y2="237" marker-end="url(#a1)"/>
+
+        <!-- tools -->
+        <rect class="box" x="440" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="501" y="264" text-anchor="middle">FFmpeg</text>
+        <text class="s" x="501" y="282" text-anchor="middle">own LGPL build</text>
+
+        <rect class="box" x="572" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="633" y="264" text-anchor="middle">whisper.cpp</text>
+        <text class="s" x="633" y="282" text-anchor="middle">Metal · Vulkan · CPU</text>
+
+        <rect class="box" x="704" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="765" y="264" text-anchor="middle">sherpa-onnx</text>
+        <text class="s" x="765" y="282" text-anchor="middle">who is speaking</text>
+
+        <rect class="box later" x="836" y="240" width="122" height="56" rx="8"/>
+        <text class="t" x="897" y="264" text-anchor="middle">llama.cpp</text>
+        <text class="s" x="897" y="282" text-anchor="middle">LLM review · M3</text>
+
+        <!-- models -->
+        <line class="ln" x1="633" y1="298" x2="633" y2="337" marker-end="url(#a1)"/>
+        <line class="ln" x1="765" y1="298" x2="765" y2="337" marker-end="url(#a1)"/>
+        <line class="ln dash" x1="897" y1="298" x2="897" y2="337" marker-end="url(#a1)"/>
+        <text class="s" x="641" y="322">loads weights</text>
+
+        <rect class="box" x="440" y="340" width="518" height="52" rx="8"/>
+        <text class="t" x="460" y="362">Models</text>
+        <text class="s" x="460" y="380">Whisper large-v3-turbo (downloaded once) · VAD, TitaNet, segmentation (inside the app)</text>
+
+        <!-- app folder -->
+        <rect class="soft" x="232" y="240" width="186" height="152" rx="10"/>
+        <text class="t" x="248" y="266">App folder</text>
+        <text class="s" x="248" y="288">read-only, replaced</text>
+        <text class="s" x="248" y="304">by each update:</text>
+        <text class="s" x="248" y="326">engine · FFmpeg · whisper.cpp</text>
+        <text class="s" x="248" y="342">small models · web app</text>
+        <text class="s" x="248" y="364">a backup of her work is</text>
+        <text class="s" x="248" y="380">made before every update</text>
+
+        <!-- outside -->
+        <rect class="soft later" x="180" y="490" width="250" height="44" rx="8"/>
+        <text x="305" y="510" text-anchor="middle">GitHub releases</text>
+        <text class="s" x="305" y="525" text-anchor="middle">latest.json · signed updates</text>
+        <line class="ln dash" x1="202" y1="488" x2="202" y2="193" marker-end="url(#a1)"/>
+        <text class="s" x="212" y="474">update check (daily, switchable)</text>
+
+        <rect class="soft later" x="580" y="490" width="250" height="44" rx="8"/>
+        <text x="705" y="510" text-anchor="middle">Hugging Face</text>
+        <text class="s" x="705" y="525" text-anchor="middle">checked against its SHA-256</text>
+        <line class="ln dash" x1="705" y1="488" x2="705" y2="395" marker-end="url(#a1)"/>
+        <text class="s" x="715" y="474">speech model, once, at setup</text>
+      </svg>
+    </div>
+    <figcaption>The window never touches models or audio directly: it shows the web app the engine serves and asks it for work. The engine starts each tool as a separate process, so any of them can be swapped without touching the rest. Updates replace only the app folder, after backing up her work. Dashed means outside her computer, or arriving in a later milestone.</figcaption>
+  </figure>
+</section>
+
+<!-- 2. Pipeline -->
+<section>
+  <div class="head">
+    <h2>The pipeline</h2>
+    <p>One interview goes top to bottom. The left column is what her knowledge base feeds in; the right is what each stage saves, so any stage can be re-run or inspected on its own.</p>
+  </div>
+  <figure>
+    <div class="canvas">
+      <svg class="d" viewBox="0 0 960 850" role="img" aria-label="Pipeline: normalize, transcribe with a glossary prompt, identify speakers against voice profiles, align words to speakers, match against the glossary, flag uncertain passages, then from milestone 3 an LLM review and from milestone 4 clarifying questions whose answers go back into the knowledge base and re-run stages 5 to 7. Each stage writes a file. Only one model is loaded at a time.">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        </defs>
+
+        <text class="cap" x="40" y="40">KNOWLEDGE BASE FEEDS IN</text>
+        <text class="cap" x="300" y="40">STAGE</text>
+        <text class="cap" x="680" y="40">SAVES TO DISK</text>
+
+        <!-- stage spine arrows -->
+        <line class="ln" x1="440" y1="130" x2="440" y2="152" marker-end="url(#a2)"/>
+        <line class="ln" x1="440" y1="214" x2="440" y2="236" marker-end="url(#a2)"/>
+        <line class="ln" x1="440" y1="298" x2="440" y2="320" marker-end="url(#a2)"/>
+        <line class="ln" x1="440" y1="382" x2="440" y2="404" marker-end="url(#a2)"/>
+        <line class="ln" x1="440" y1="466" x2="440" y2="488" marker-end="url(#a2)"/>
+        <line class="ln dash" x1="440" y1="550" x2="440" y2="572" marker-end="url(#a2)"/>
+        <line class="ln dash" x1="440" y1="634" x2="440" y2="656" marker-end="url(#a2)"/>
+        <line class="ln" x1="440" y1="718" x2="440" y2="740" marker-end="url(#a2)"/>
+
+        <!-- row 1: normalize (y=70) -->
+        <rect class="box" x="300" y="70" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="97">1</text>
+        <text class="t" x="336" y="97">Normalize</text>
+        <text class="s" x="336" y="118">ffmpeg · any phone format in</text>
+        <line class="ln" x1="582" y1="100" x2="677" y2="100" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="70" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="96">audio.wav · peaks.json</text>
+        <text class="s" x="696" y="116">16 kHz mono · waveform data</text>
+
+        <!-- row 2: transcribe (y=154) -->
+        <rect class="soft" x="40" y="154" width="210" height="60" rx="8"/>
+        <text class="t" x="56" y="180">Glossary</text>
+        <text class="s" x="56" y="200">ranked into a ~200-token prompt</text>
+        <line class="ln" x1="252" y1="184" x2="297" y2="184" marker-end="url(#a2)"/>
+        <rect class="box" x="300" y="154" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="181">2</text>
+        <text class="t" x="336" y="181">Transcribe</text>
+        <rect class="pill" x="506" y="166" width="60" height="20" rx="10"/>
+        <text class="pt" x="536" y="180" text-anchor="middle">Whisper</text>
+        <text class="s" x="336" y="202">whisper.cpp · splits at silences</text>
+        <line class="ln" x1="582" y1="184" x2="677" y2="184" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="154" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="180">asr.json · prompt.txt</text>
+        <text class="s" x="696" y="200">words, times, confidence</text>
+
+        <!-- row 3: speakers (y=238) -->
+        <rect class="soft" x="40" y="238" width="210" height="60" rx="8"/>
+        <text class="t" x="56" y="264">Voice profiles</text>
+        <text class="s" x="56" y="284">her own (app-wide) + project's</text>
+        <line class="ln" x1="252" y1="268" x2="297" y2="268" marker-end="url(#a2)"/>
+        <rect class="box" x="300" y="238" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="265">3</text>
+        <text class="t" x="336" y="265">Speakers</text>
+        <rect class="pill" x="462" y="250" width="104" height="20" rx="10"/>
+        <text class="pt" x="514" y="264" text-anchor="middle">speaker models</text>
+        <text class="s" x="336" y="286">sherpa-onnx · TitaNet-Large voices</text>
+        <line class="ln" x1="582" y1="268" x2="677" y2="268" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="238" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="264">speakers.json</text>
+        <text class="s" x="696" y="284">who spoke when · matched names</text>
+
+        <!-- row 4: align (y=322) -->
+        <rect class="soft" x="40" y="322" width="210" height="60" rx="8"/>
+        <text class="t" x="56" y="348">Her speaker fixes</text>
+        <text class="s" x="56" y="368">click or drag · kept on re-runs</text>
+        <line class="ln" x1="252" y1="352" x2="297" y2="352" marker-end="url(#a2)"/>
+        <rect class="box" x="300" y="322" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="349">4</text>
+        <text class="t" x="336" y="349">Align</text>
+        <text class="s" x="336" y="370">give each sentence a speaker</text>
+        <line class="ln" x1="582" y1="352" x2="677" y2="352" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="322" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="348">aligned.json</text>
+        <text class="s" x="696" y="368">turns by sentence, before fixes</text>
+
+        <!-- row 5: glossary match (y=406) -->
+        <rect class="soft" x="40" y="406" width="210" height="60" rx="8"/>
+        <text class="t" x="56" y="432">Glossary + spellings</text>
+        <text class="s" x="56" y="452">fuzzy and sound-alike match</text>
+        <line class="ln" x1="252" y1="436" x2="297" y2="436" marker-end="url(#a2)"/>
+        <rect class="box" x="300" y="406" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="433">5</text>
+        <text class="t" x="336" y="433">Glossary match</text>
+        <text class="s" x="336" y="454">rapidfuzz + Double Metaphone</text>
+        <line class="ln" x1="582" y1="436" x2="677" y2="436" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="406" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="432">transcript.json · matches.json</text>
+        <text class="s" x="696" y="452">master copy · only sure fixes applied</text>
+
+        <!-- row 6: flag (y=490) -->
+        <rect class="box" x="300" y="490" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="517">6</text>
+        <text class="t" x="336" y="517">Flag</text>
+        <text class="s" x="336" y="538">low confidence · near-misses · new names</text>
+        <line class="ln" x1="582" y1="520" x2="677" y2="520" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="490" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="516">flags.json</text>
+        <text class="s" x="696" y="536">what she should check, with times</text>
+
+        <!-- row 7: LLM review (y=574) -->
+        <rect class="soft later" x="40" y="574" width="210" height="60" rx="8"/>
+        <text class="t" x="56" y="600">Context + glossary</text>
+        <text class="s" x="56" y="620">repeated in every chunk</text>
+        <line class="ln dash" x1="252" y1="604" x2="297" y2="604" marker-end="url(#a2)"/>
+        <rect class="box later" x="300" y="574" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="601">7</text>
+        <text class="t" x="336" y="601">LLM review</text>
+        <rect class="pill" x="526" y="586" width="40" height="20" rx="10"/>
+        <text class="pt" x="546" y="600" text-anchor="middle">LLM</text>
+        <text class="s" x="336" y="622">llama.cpp · from M3</text>
+        <line class="ln dash" x1="582" y1="604" x2="677" y2="604" marker-end="url(#a2)"/>
+        <rect class="soft later" x="680" y="574" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="600">suggestions → flags</text>
+        <text class="s" x="696" y="620">never applied on their own</text>
+
+        <!-- row 8: clarify (y=658) -->
+        <rect class="soft later" x="40" y="658" width="210" height="60" rx="8"/>
+        <text class="t" x="56" y="684">Knowledge base</text>
+        <text class="s" x="56" y="704">her answers are saved here</text>
+        <line class="ln dash" x1="297" y1="688" x2="253" y2="688" marker-end="url(#a2)"/>
+        <rect class="box later" x="300" y="658" width="280" height="60" rx="8"/>
+        <text class="n" x="316" y="685">8</text>
+        <text class="t" x="336" y="685">Clarify</text>
+        <text class="s" x="336" y="706">asks her about spellings · from M4</text>
+        <line class="ln dash" x1="582" y1="688" x2="677" y2="688" marker-end="url(#a2)"/>
+        <rect class="soft later" x="680" y="658" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="684">questions.json</text>
+        <text class="s" x="696" y="704">shown to her in the app</text>
+
+        <!-- loop back to stage 5 -->
+        <path class="ln dash" d="M40,688 L22,688 L22,436 L37,436" marker-end="url(#a2)"/>
+        <text class="s" transform="translate(14 562) rotate(-90)" text-anchor="middle">then re-run 5 to 7</text>
+
+        <!-- row 9: review -->
+        <rect class="strong" x="300" y="742" width="280" height="60" rx="8"/>
+        <text class="t" x="316" y="769">Review in the app</text>
+        <text class="s" x="316" y="790">transcript + waveform · click to hear</text>
+        <line class="ln" x1="582" y1="772" x2="677" y2="772" marker-end="url(#a2)"/>
+        <rect class="soft" x="680" y="742" width="260" height="60" rx="8"/>
+        <text class="f" x="696" y="768">exports/ .md · .docx</text>
+        <text class="s" x="696" y="788">names, timestamps, flags marked</text>
+
+        <!-- legend -->
+        <rect class="pill" x="40" y="822" width="44" height="18" rx="9"/>
+        <text class="s" x="94" y="835">model loaded in memory, one at a time</text>
+        <rect class="box later" x="330" y="822" width="44" height="18" rx="4"/>
+        <text class="s" x="384" y="835">arrives in a later milestone</text>
+      </svg>
+    </div>
+    <figcaption>Three stages load a model (the black pills), and they never overlap. Stages 4 to 6 are plain code and take seconds, so her speaker fixes apply instantly and survive any re-run. The loop on the left is the "learning": her answers go into the project's knowledge base and every future interview starts from them.</figcaption>
+  </figure>
+</section>
+
+<!-- 3. Her workflow -->
+<section>
+  <div class="head">
+    <h2>Her side of it</h2>
+    <p>What she actually does, in order, and which steps teach the project something it keeps.</p>
+  </div>
+  <figure>
+    <div class="canvas">
+      <svg class="d" viewBox="0 0 960 350" role="img" aria-label="Once, at setup, she records her own voice, which every project then recognizes. Then seven steps per interview: set up project, add interview, app works, fix speakers, confirm spellings, review flags, export. Setting up, fixing speakers and confirming spellings save to the project knowledge base, which every run uses.">
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        </defs>
+
+        <g>
+          <rect class="box" x="19" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="33" y="84">1</text>
+          <text class="t" x="33" y="102">Set up project</text>
+          <text class="s" x="33" y="122">people, places,</text>
+          <text class="s" x="33" y="137">terms, topic</text>
+
+          <rect class="box" x="153" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="167" y="84">2</text>
+          <text class="t" x="167" y="102">Add interview</text>
+          <text class="s" x="167" y="122">drop one or</text>
+          <text class="s" x="167" y="137">more files</text>
+
+          <rect class="box" x="287" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="301" y="84">3</text>
+          <text class="t" x="301" y="102">App works</text>
+          <text class="s" x="301" y="122">progress for</text>
+          <text class="s" x="301" y="137">each stage</text>
+
+          <rect class="box" x="421" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="435" y="84">4</text>
+          <text class="t" x="435" y="102">Fix speakers</text>
+          <text class="s" x="435" y="122">name voices; click</text>
+          <text class="s" x="435" y="137">or drag words</text>
+
+          <rect class="box" x="555" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="569" y="84">5</text>
+          <text class="t" x="569" y="102">Confirm names</text>
+          <text class="s" x="569" y="122">a few spelling</text>
+          <text class="s" x="569" y="137">questions</text>
+
+          <rect class="box" x="689" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="703" y="84">6</text>
+          <text class="t" x="703" y="102">Review flags</text>
+          <text class="s" x="703" y="122">text beside the</text>
+          <text class="s" x="703" y="137">waveform</text>
+
+          <rect class="strong" x="823" y="60" width="118" height="86" rx="8"/>
+          <text class="n" x="837" y="84">7</text>
+          <text class="t" x="837" y="102">Export</text>
+          <text class="s" x="837" y="122">.md and .docx</text>
+        </g>
+
+        <line class="ln" x1="139" y1="103" x2="151" y2="103" marker-end="url(#a3)"/>
+        <line class="ln" x1="273" y1="103" x2="285" y2="103" marker-end="url(#a3)"/>
+        <line class="ln" x1="407" y1="103" x2="419" y2="103" marker-end="url(#a3)"/>
+        <line class="ln" x1="541" y1="103" x2="553" y2="103" marker-end="url(#a3)"/>
+        <line class="ln" x1="675" y1="103" x2="687" y2="103" marker-end="url(#a3)"/>
+        <line class="ln" x1="809" y1="103" x2="821" y2="103" marker-end="url(#a3)"/>
+
+        <!-- KB: per project, plus her own voice app-wide -->
+        <rect class="soft" x="19" y="210" width="710" height="56" rx="10"/>
+        <text class="t" x="374" y="234" text-anchor="middle">Project knowledge base</text>
+        <text class="s" x="374" y="254" text-anchor="middle">context · glossary · interviewees' voices · confirmed spellings · speaker fixes</text>
+
+        <rect class="strong" x="741" y="210" width="200" height="56" rx="10"/>
+        <text class="t" x="841" y="234" text-anchor="middle">Her voice</text>
+        <text class="s" x="841" y="254" text-anchor="middle">known in every project</text>
+
+        <rect class="box later" x="741" y="292" width="200" height="46" rx="8"/>
+        <text class="n" x="755" y="312">0</text>
+        <text class="t" x="771" y="312">Once, at setup</text>
+        <text class="s" x="755" y="329">read aloud 30–60 s · M4</text>
+        <line class="ln dash" x1="841" y1="290" x2="841" y2="269" marker-end="url(#a3)"/>
+        <text class="s" x="733" y="320" text-anchor="end">then "Is this you?" refines it each interview</text>
+
+        <line class="ln" x1="78" y1="148" x2="78" y2="207" marker-end="url(#a3)"/>
+        <text class="s" x="86" y="182">builds</text>
+        <line class="ln" x1="346" y1="208" x2="346" y2="149" marker-end="url(#a3)"/>
+        <text class="s" x="354" y="182">used every run</text>
+        <line class="ln" x1="480" y1="148" x2="480" y2="207" marker-end="url(#a3)"/>
+        <text class="s" x="488" y="182">voice saved</text>
+        <line class="ln" x1="614" y1="148" x2="614" y2="207" marker-end="url(#a3)"/>
+        <text class="s" x="622" y="182">spelling saved</text>
+      </svg>
+    </div>
+    <figcaption>A project can be a book, an article or a series. Her own voice is recorded once and recognized in every project, so in a one-on-one interview everyone else is the interviewee. In step 4 she clicks a word to change the speaker from there, or drags across words to change just those. Planned for M4: the app learns from her first few fixes and relabels the rest. By the third interview with the same people, steps 4 and 5 should mostly be empty.</figcaption>
+  </figure>
+</section>
+
+<!-- 4. Memory -->
+<section>
+  <div class="head">
+    <h2>Fitting in 16 GB</h2>
+    <p>Why models load one at a time on her MacBook. The speaker step is measured (about 0.9 GB with TitaNet-Large, on Windows); the rest are estimates.</p>
+  </div>
+  <figure>
+    <div class="canvas">
+      <svg class="d" viewBox="0 0 960 370" role="img" aria-label="Estimated memory per stage on a 16 GB Mac: about 6 GB baseline for macOS, browser and engine; transcription adds about 2.5 GB, speakers about 0.9 GB (measured), LLM review about 6 GB. Loading all models at once would reach about 15.5 GB, close to the 16 GB limit.">
+        <!-- grid: y = 280 - 15*GB -->
+        <line class="grid" x1="70" y1="280" x2="940" y2="280"/>
+        <line class="grid" x1="70" y1="220" x2="940" y2="220"/>
+        <line class="grid" x1="70" y1="160" x2="940" y2="160"/>
+        <line class="grid" x1="70" y1="100" x2="940" y2="100"/>
+        <line class="limit" x1="70" y1="40" x2="940" y2="40"/>
+        <text class="s" x="60" y="284" text-anchor="end">0</text>
+        <text class="s" x="60" y="224" text-anchor="end">4</text>
+        <text class="s" x="60" y="164" text-anchor="end">8</text>
+        <text class="s" x="60" y="104" text-anchor="end">12</text>
+        <text class="s" x="60" y="44" text-anchor="end">16 GB</text>
+        <text class="s" x="936" y="32" text-anchor="end">her MacBook's physical memory</text>
+
+        <!-- Normalize -->
+        <rect class="base" x="107.5" y="190" width="70" height="90"/>
+        <text class="f" x="142.5" y="182" text-anchor="middle">~6</text>
+        <!-- Transcribe -->
+        <rect class="base" x="252.5" y="190" width="70" height="90"/>
+        <rect class="model" x="252.5" y="152.5" width="70" height="37.5"/>
+        <text class="f" x="287.5" y="144" text-anchor="middle">~8.5</text>
+        <!-- Speakers -->
+        <rect class="base" x="397.5" y="190" width="70" height="90"/>
+        <rect class="model" x="397.5" y="176.5" width="70" height="13.5"/>
+        <text class="f" x="432.5" y="168" text-anchor="middle">~7</text>
+        <!-- Match + flag -->
+        <rect class="base" x="542.5" y="190" width="70" height="90"/>
+        <text class="f" x="577.5" y="182" text-anchor="middle">~6</text>
+        <!-- LLM -->
+        <rect class="base" x="687.5" y="190" width="70" height="90"/>
+        <rect class="model" x="687.5" y="100" width="70" height="90"/>
+        <text class="f" x="722.5" y="92" text-anchor="middle">~12</text>
+        <!-- All at once -->
+        <rect class="ghost" x="832.5" y="49" width="70" height="231"/>
+        <text class="f" x="867.5" y="68" text-anchor="middle">~15.5</text>
+
+        <text class="t" x="142.5" y="302" text-anchor="middle">Normalize</text>
+        <text class="t" x="287.5" y="302" text-anchor="middle">Transcribe</text>
+        <text class="t" x="432.5" y="302" text-anchor="middle">Speakers</text>
+        <text class="t" x="577.5" y="302" text-anchor="middle">Match + flag</text>
+        <text class="t" x="722.5" y="302" text-anchor="middle">LLM review</text>
+        <text class="t" x="867.5" y="302" text-anchor="middle">All at once</text>
+        <text class="s" x="142.5" y="320" text-anchor="middle">no model</text>
+        <text class="s" x="287.5" y="320" text-anchor="middle">Whisper turbo</text>
+        <text class="s" x="432.5" y="320" text-anchor="middle">TitaNet · measured</text>
+        <text class="s" x="577.5" y="320" text-anchor="middle">no model</text>
+        <text class="s" x="722.5" y="320" text-anchor="middle">~8B model · M3</text>
+        <text class="s" x="867.5" y="320" text-anchor="middle">what we avoid</text>
+
+        <rect class="base" x="70" y="342" width="14" height="14"/>
+        <text class="s" x="92" y="353">macOS, browser and engine (guess)</text>
+        <rect class="model" x="320" y="342" width="14" height="14"/>
+        <text class="s" x="342" y="353">model for that stage (estimate)</text>
+      </svg>
+    </div>
+    <figcaption>One at a time, the worst moment is the LLM step at roughly 12 GB. All together would push close to 16 GB and start swapping to disk, which on a laptop feels like the app froze. The engine also checks free memory before each stage and picks a smaller model when it has to.</figcaption>
+  </figure>
+</section>
+
+<!-- 5. Files + stack -->
+<section>
+  <div class="head">
+    <h2>On disk, and what it's built with</h2>
+    <p>Plain files she could open in any editor, no database, in her data folder (<code>~/Library/Application Support/Verbatim</code> on a Mac, <code>%LOCALAPPDATA%\Verbatim Data</code> on Windows). Each tool has a named fallback in case it disappoints.</p>
+  </div>
+  <div class="split">
+<pre>app/
+  settings.json      <span class="c">her choices, update check</span>
+  my-voice.json      <span class="c">her own voice, every project</span>
+  my-voice/          <span class="c">the samples it came from</span>
+  backups/           <span class="c">before every update · last 3</span>
+projects/
+  <b>my-book/</b>
+    project.json     <span class="c">context, glossary, spellings</span>
+    voices/          <span class="c">interviewees she has named</span>
+    interviews/
+      <b>2026-10-17-interview/</b>
+        source.m4a     <span class="c">her original</span>
+        audio.wav      <span class="c">16 kHz mono</span>
+        peaks.json     <span class="c">waveform</span>
+        prompt.txt     <span class="c">what Whisper was told</span>
+        asr.json
+        speakers.json
+        speaker_edits.json <span class="c">her speaker fixes</span>
+        aligned.json
+        transcript.json <span class="c">master copy</span>
+        matches.json
+        flags.json
+        run.json       <span class="c">progress, timings, memory</span>
+models/              <span class="c">the speech model, downloaded once</span>
+logs/                <span class="c">the engine's log, no transcript text</span></pre>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Part</th><th>Choice</th><th>Fallback</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Audio</td><td>FFmpeg <span class="s">· own LGPL build, decoding only</span></td><td class="s">none needed</td></tr>
+          <tr><td class="k">Transcribe</td><td>whisper.cpp, large-v3-turbo <span class="s">· prompt biasing · Metal on a Mac, Vulkan or CPU on Windows</span></td><td class="s">large-v3; Parakeet if accuracy is the bottleneck</td></tr>
+          <tr><td class="k">Speakers</td><td>sherpa-onnx + NVIDIA TitaNet-Large voices <span class="s">· default; grouping 0.8, name one per person</span></td><td class="s">WeSpeaker ResNet34 (old default); pyannote community-1</td></tr>
+          <tr><td class="k">Voice crowd</td><td>71 strangers from AMI <span class="s">· CC BY 4.0, fingerprints only</span></td><td class="s">voices heard in her projects</td></tr>
+          <tr><td class="k">Speaker fixes</td><td>click or drag in the transcript <span class="s">· stored as edits</span></td><td class="s">—</td></tr>
+          <tr><td class="k">Learn from fixes</td><td>small classifier on voice fingerprints <span class="s">· planned, M4</span></td><td class="s">manual fixes</td></tr>
+          <tr><td class="k">Name matching</td><td>rapidfuzz + Double Metaphone</td><td class="s">EmbeddingGemma 2 spotter (M3 test)</td></tr>
+          <tr><td class="k">LLM review</td><td>llama.cpp server <span class="s">· model picked by eval</span></td><td class="s">Ollama during development</td></tr>
+          <tr><td class="k">Engine</td><td>Python 3.12, uv, FastAPI</td><td class="s">—</td></tr>
+          <tr><td class="k">Interface</td><td>React + Vite, Base UI, Stark design system</td><td class="s">—</td></tr>
+          <tr><td class="k">Desktop app</td><td>Tauri 2 window + the engine as a bundled helper <span class="s">· PyInstaller</span></td><td class="s">Electron (bigger)</td></tr>
+          <tr><td class="k">Updates</td><td>Tauri updater <span class="s">· signed with our own key, from GitHub releases</span></td><td class="s">manual download</td></tr>
+          <tr><td class="k">Builds</td><td>GitHub Actions, started by hand <span class="s">· signed and published from the owner's PC</span></td><td class="s">—</td></tr>
+          <tr><td class="k">Waveform</td><td>custom canvas, styled after WaveformPlayer</td><td class="s">wavesurfer.js</td></tr>
+          <tr><td class="k">Export</td><td>Markdown, python-docx</td><td class="s">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 5b. Who's speaking -->
+<section>
+  <div class="head">
+    <h2>Who's speaking: what we measured</h2>
+    <p>Scored on a fully corrected 6:38 sample interview (three speakers, one of them 71% of the words) and on 16 AMI test meetings where the same people return across meetings. The corrected original was never modified; every run used a copy.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Voice model</th><th>Her sample: words right</th><th>Voices found (truly 3)</th><th>AMI: returning voices auto-labelled</th><th>Speaker step, 6.6 min</th></tr></thead>
+      <tbody>
+        <tr><td class="k">WeSpeaker ResNet34 <span class="s">· old default</span></td><td>71% <span class="s">· same as "everyone is the main speaker"</span></td><td>2</td><td>49 of 180</td><td>64 s</td></tr>
+        <tr><td class="k">NVIDIA TitaNet-Large <span class="s">· chosen</span></td><td><b>86%</b> <span class="s">· 77% at the chosen grouping</span></td><td>20 <span class="s">· 9 at the chosen grouping (0.8)</span></td><td><b>180 of 180, none wrong</b></td><td>95 s</td></tr>
+        <tr><td class="k">3D-Speaker CAM++ advanced</td><td>83%</td><td>16</td><td>180 of 180 <span class="s">· training data unknown</span></td><td>57 s</td></tr>
+        <tr><td class="k">WeSpeaker ResNet293</td><td>71%</td><td>1</td><td>18 of 180</td><td>325 s</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="risks">
+    <li><b>Name one voice per person; the app does the rest.</b> No grouping setting gives "one voice per person": TitaNet splits each person into several pure fragments, and coarser settings start merging different women. So the app splits finely and recognizes fragments once she names one per person. On two AMI meetings, including one with four women, 4 clicks labelled 79–87% of speech, 95–97% of it correctly. The rest stays unnamed for her to fix.</li>
+    <li><b>Open question.</b> TitaNet hears the main speaker's words in the sample as two very different voices. Either it's two people, or one person who sounds very different at times. That's being checked by ear.</li>
+    <li><b>Enroll, don't train.</b> Recognizing a voice means saving its fingerprint once, which takes seconds and changes no model. That's how her own voice and named interviewees work.</li>
+    <li><b>No fine-tuning for now.</b> One corrected file is too little to train on or test with, most interviewees appear once, and a training pipeline is a maintenance burden. Revisit only if separation stays poor across several of her recordings, starting with the small segmentation model trained on AMI.</li>
+    <li><b>Planned: learn from her fixes.</b> After she corrects a few stretches, a small classifier on the voice fingerprints relabels the rest of that interview. A first simple version didn't beat automatic detection yet, so it needs her recordings to prove itself.</li>
+    <li><b>Later idea:</b> a local LLM reads conversational cues (who asks questions, "my sister") to flag likely speaker switches.</li>
+  </ul>
+</section>
+
+<!-- 6. Milestones -->
+<section>
+  <div class="head">
+    <h2>Milestones</h2>
+    <p>The order changed on the way: the product interface and packaging came before the eval, which waits on her reference transcripts.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>What</th><th>Done when</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td class="k">M1</td><td>Engine + bare dev view</td><td>Stages 1–6 run on the sample clips; speakers named once are recognized in another file; speaker fixes (click or drag); AMI voice crowd; TitaNet-Large voices.</td><td><span class="state now">built</span></td></tr>
+        <tr><td class="k">M2</td><td>Eval</td><td>Word error rate, name accuracy, speaker errors and share of her edits we caught, against her corrected transcripts and her transcriber's. Dolby vs Voice Memos scored.</td><td><span class="state wait">needs her files</span></td></tr>
+        <tr><td class="k">M3</td><td>LLM review</td><td>2–3 local models compared on the eval; EmbeddingGemma 2 spotter tried for a day.</td><td><span class="state">later</span></td></tr>
+        <tr><td class="k">M4</td><td>Intake + questions</td><td><b>Her own voice, recorded once</b> (built: read aloud or pick herself from an interview). Still to come: learning from her first speaker fixes, spelling questions, one-click glossary additions.</td><td><span class="state">part built</span></td></tr>
+        <tr><td class="k">M5</td><td>Product interface</td><td>Home, new transcription, review beside the waveform, Word and Markdown export, Settings, Help &amp; FAQ, first-run setup with a resumable, checked download and a self-test; deleting to the Bin.</td><td><span class="state now">built</span></td></tr>
+        <tr><td class="k">M6</td><td>Packaging</td><td>Mac and Windows builds on GitHub Actions; signed in-app updates from the public releases repo (0.1.0 → 0.1.2), proven on Windows. Still to do: the test round on her Mac, including "Open Anyway".</td><td><span class="state now">built · Mac test next</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 7. Risks -->
+<section>
+  <div class="head">
+    <h2>What could bite</h2>
+  </div>
+  <ul class="risks">
+    <li><b>One Mac test round.</b> Speed and memory on her 16 GB MacBook are estimates until it runs. Metal gave nonsense on GitHub's virtual Macs; setup's self-test now falls back to the processor if her graphics chip ever does the same.</li>
+    <li><b>Similar voices at one table.</b> On the first sample the original voice model did no better than labelling everyone as the main speaker (71% of words). TitaNet-Large reaches 86%. Fast manual fixes stay the fallback.</li>
+    <li><b>Voiceprints are personal data.</b> Her voice and interviewees' voices stay on her machine, are listed in settings, and can be deleted.</li>
+    <li><b>Table-mic group audio with strong accents.</b> Context fixes names, not noise.</li>
+    <li><b>Dolby On's noise reduction</b> sounds clearer to people but could help or hurt transcription. Measured in M2, not assumed.</li>
+    <li><b>The 1.6 GB model download</b> on hotel Wi-Fi. Setup resumes where it left off (built and tested).</li>
+    <li><b>No paid code signing.</b> The first open needs "Open Anyway" on a Mac and "Run anyway" on Windows; updates after that are checked against our own signature.</li>
+  </ul>
+</section>
+
+</div>
