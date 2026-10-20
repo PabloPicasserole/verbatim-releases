@@ -47,8 +47,8 @@ This repository only holds the app's releases.
 
 Everything runs on your computer. Only two things ever go online: downloading the speech model
 once during setup, and the update check, which you can switch off. More detail, including each
-step an interview goes through, is in [docs/architecture.html](docs/architecture.html)
-(GitHub shows its source: download it and open it in your browser).
+step an interview goes through, is on
+[the architecture page](https://pablopicasserole.github.io/verbatim-releases/architecture.html).
 
 ## What you need
 
